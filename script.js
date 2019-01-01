@@ -5,7 +5,7 @@
   let ertek = {
     tr: [20, 0],
     mc: [40, 1],
-    vas: [0, 1],
+    acel: [0, 1],
     titan: [0, 1],
     palanta: [0, 1],
     energia: [0, 1],
@@ -15,13 +15,15 @@
   let nevek = {
     tr: "TR",
     mc: "M€",
-    vas: "Vas",
+    acel: "Acél",
     titan: "Titán",
     palanta: "Palánta",
     energia: "Energia",
     ho: "Hő"
   };
   let elozmeny = [];
+  let oldal = 0;
+  let oldalMeret = 5;
   let sorok = "";
   for (let sor of Object.keys(ertek)) {
     sorok += sorMinta.replace(/\$SOR\$/g, sor).replace(/\$NEV\$/g, nevek[sor]);
@@ -60,7 +62,7 @@
       generacio: true,
       tr: [addAzErteket("tr", 1), 0],
       mc: [addAzErteket("tr", 0) + addAzErteket("mc", 1), 0],
-      vas: [addAzErteket("vas", 1), 0],
+      acel: [addAzErteket("acel", 1), 0],
       titan: [addAzErteket("titan", 1), 0],
       palanta: [addAzErteket("palanta", 1), 0],
       energia: [-addAzErteket("energia", 0) + addAzErteket("energia", 1), 0],
@@ -74,12 +76,20 @@
       frissitsd();
     }
   });
+  onclick("elozo-oldal", () => {
+    oldal--;
+    frissitsd();
+  });
+  onclick("kovetkezo-oldal", () => {
+    oldal++;
+    frissitsd();
+  });
   frissitsd();
   function ujValtozas() {
     return {
       tr: [0, 0],
       mc: [0, 0],
-      vas: [0, 0],
+      acel: [0, 0],
       titan: [0, 0],
       palanta: [0, 0],
       energia: [0, 0],
@@ -95,24 +105,31 @@
       frissitsdASort(sor, 0, "ero");
       frissitsdASort(sor, 1, "bev");
     }
-    $("elozmenyek").innerHTML = elozmeny
-      .map((e, szam) => {
-        let r = elozmenyMinta;
-        for (let sor of Object.keys(e)) {
-          let v = e[sor];
-          if (Array.isArray(v)) {
-            v = v.map(elojeles).join(" ");
-          } else {
-            v = v ? "Igen" : "";
-          }
-          r = r.replace(new RegExp("\\$" + sor.toUpperCase() + "\\$", "g"), v);
+    $("elozmenyek").innerHTML = elozmeny.reduceRight((mind, e, szam) => {
+      if (
+        elozmeny.length - szam - 1 < oldal * oldalMeret ||
+        elozmeny.length - szam - 1 >= (oldal + 1) * oldalMeret
+      ) {
+        return mind;
+      }
+      let r = elozmenyMinta;
+      for (let sor of Object.keys(e)) {
+        let v = e[sor];
+        if (Array.isArray(v)) {
+          v = v.map(elojeles).join(" ");
+        } else {
+          v = v ? "Igen" : "";
         }
-        if (!e.generacio) {
-          r = r.replace(/\$GENERACIO\$/g, "");
-        }
-        return r;
-      })
-      .join("\n");
+        r = r.replace(new RegExp("\\$" + sor.toUpperCase() + "\\$", "g"), v);
+      }
+      if (!e.generacio) {
+        r = r.replace(/\$GENERACIO\$/g, "");
+      }
+      return mind + r;
+    }, "");
+    $("elozo-oldal").disabled = oldal === 0;
+    $("kovetkezo-oldal").disabled =
+      oldal === Math.ceil(elozmeny.length / oldalMeret) - 1;
   }
   function frissitsdASort(sor, szam, uto) {
     $(sor + "-" + uto).innerHTML =
@@ -134,4 +151,4 @@
   function onclick(id, cb) {
     $(id).addEventListener("click", cb);
   }
-})()
+})();
