@@ -4,14 +4,14 @@
   let elozmenyMinta = $("elozmeny-minta").innerHTML;
   let ertek = {
     tr: [20, 0],
-    mc: [40, 1],
+    mc: [42, 1],
     acel: [0, 1],
     titan: [0, 1],
     palanta: [0, 1],
     energia: [0, 1],
     ho: [0, 1]
   };
-  let valtozas = ujValtozas();
+  let valtozas = JSON.parse(sessionStorage["valtozas"] || "null") || ujValtozas();
   let nevek = {
     tr: "TR",
     mc: "M€",
@@ -21,7 +21,7 @@
     energia: "Energia",
     ho: "Hő"
   };
-  let elozmeny = [];
+  let elozmeny = JSON.parse(sessionStorage["elozmeny"] || "null") || [];
   let oldal = 0;
   let oldalMeret = 5;
   let sorok = "";
@@ -97,6 +97,8 @@
     };
   }
   function frissitsd() {
+    sessionStorage["elozmeny"] = JSON.stringify(elozmeny);
+    sessionStorage["valtozas"] = JSON.stringify(valtozas);
     $("gen").innerText = elozmeny.reduce(
       (ossz, e) => (e.generacio ? ossz + 1 : ossz),
       1
@@ -116,9 +118,11 @@
       for (let sor of Object.keys(e)) {
         let v = e[sor];
         if (Array.isArray(v)) {
-          v = v.map(elojeles).join(" ");
+          v = v.map(elojeles).join("<br>");
         } else {
-          v = v ? "Igen" : "";
+          v = v
+            ? "<span class='icon is-small'><img src='meg.png' alt='Új'/></span>"
+            : "";
         }
         r = r.replace(new RegExp("\\$" + sor.toUpperCase() + "\\$", "g"), v);
       }
@@ -132,11 +136,10 @@
       oldal === Math.ceil(elozmeny.length / oldalMeret) - 1;
   }
   function frissitsdASort(sor, szam, uto) {
-    $(sor + "-" + uto).innerHTML =
-      "<b>" +
-      addAzErteket(sor, szam) +
-      "</b>" +
-      (valtozas[sor][szam] ? " " + elojeles(valtozas[sor][szam]) : "");
+    $(sor + "-" + uto).innerHTML = addAzErteket(sor, szam);
+    $(sor + "-" + uto + "-valt").innerHTML = valtozas[sor][szam]
+      ? elojeles(valtozas[sor][szam])
+      : "";
   }
   function addAzErteket(sor, szam) {
     let r = ertek[sor][szam];
