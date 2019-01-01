@@ -5,17 +5,32 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<title>A Mars Terraformálása - Játékos Tábla</title>
 		<link rel="stylesheet" href="bulma.css" type="text/css" media="all">
+		<style>
+			.icon {width: 32px; height: 32px; vertical-align: -6px;}
+			.icon.is-small {width: 16px; height: 16px; vertical-align: -3px;}
+			.icon > img {image-rendering: pixelated; width: 32px; height: 32px;}
+			.icon.is-small > img {width: 16px; height: 16px;}
+			.tag {width: 100%; font-weight: bolder;}
+			.tag.is-dark {background-color: #640 !important;}
+			.g {padding: 8px;}
+			.inv {visibility: hidden;}
+		</style>
 	</head>
 	<body>
 		<div class="container">
-			<p>
-				<span id="gen">0</span>. generáció
+			<p class="g">
+				<span class="icon is-small">
+					<img src="generacio.png" alt=""/>
+				</span>
+				<b>
+					<span id="gen">0</span>. generáció
+				</b>
 			</p>
 			<div class="table-container">
 				<table class="table is-striped is-narrow">
 					<thead>
 						<tr>
-							<th>Típus</th>
+							<th></th>
 							<th colspan="3">Erőforrás</th>
 							<th colspan="3">Bevétel</th>
 						</tr>
@@ -23,27 +38,53 @@
 					<tbody id="sorok">
 						<template id="sor-minta">
 							<tr>
-								<th>$NEV$</th>
+								<th>
+									<span class="icon">
+										<img src="$SOR$.png" alt="$NEV$"/>
+									</span>
+								</th>
 								<td>
 									<button type="button" id="$SOR$-ero-bol" class="button is-small">
-										-
+										<span class="icon is-small">
+											<img src="bol.png" alt="-"/>
+										</span>
 									</button>
 								</td>
-								<td id="$SOR$-ero">0</td>
+								<td>
+									<span class="tag is-size-5" id="$SOR$-ero">
+										0
+									</span>
+									<div id="$SOR$-ero-valt" class="has-text-centered">
+										
+									</div>
+								</td>
 								<td>
 									<button type="button" id="$SOR$-ero-meg" class="button is-small">
-										+
+										<span class="icon is-small">
+											<img src="meg.png" alt="+"/>
+										</span>
 									</button>
 								</td>
 								<td>
-									<button type="button" id="$SOR$-bev-bol" class="button is-small is-dark">
-										-
+									<button type="button" id="$SOR$-bev-bol" class="button is-small">
+										<span class="icon is-small">
+											<img src="bol.png" alt="-"/>
+										</span>
 									</button>
 								</td>
-								<td id="$SOR$-bev">0</td>
 								<td>
-									<button type="button" id="$SOR$-bev-meg" class="button is-small is-dark">
-										+
+									<span class="tag is-dark is-size-5" id="$SOR$-bev">
+										0
+									</span>
+									<div id="$SOR$-bev-valt" class="has-text-centered">
+										
+									</div>
+								</td>
+								<td>
+									<button type="button" id="$SOR$-bev-meg" class="button is-small">
+										<span class="icon is-small">
+											<img src="meg.png" alt="+"/>
+										</span>
 									</button>
 								</td>
 							</tr>
@@ -53,13 +94,13 @@
 						<tr>
 							<td></td>
 							<td colspan="3">
-								<button type="button" id="valt-gomb" class="button is-small">
-									Változás OK
+								<button type="button" id="valt-gomb" class="button">
+									OK
 								</button>
 							</td>
 							<td colspan="3">
-								<button type="button" id="gen-gomb" class="button is-small is-dark">
-									Generáció vége
+								<button type="button" id="gen-gomb" class="button is-dark">
+									Új generáció
 								</button>
 							</td>
 						</tr>
@@ -70,14 +111,46 @@
 				<table class="table is-striped is-narrow">
 					<thead>
 						<tr>
-							<th>Generáció</th>
-							<th>TR</th>
-							<th>M€</th>
-							<th>Acél</th>
-							<th>Titán</th>
-							<th>Palánta</th>
-							<th>Energia</th>
-							<th>Hő</th>
+							<th>
+								<span class="icon is-small">
+									<img src="generacio.png" alt="Generáció"/>
+								</span>
+							</th>
+							<th>
+								<span class="icon is-small">
+									<img src="tr.png" alt="TR"/>
+								</span>
+							</th>
+							<th>
+								<span class="icon is-small">
+									<img src="mc.png" alt="M€"/>
+								</span>
+							</th>
+							<th>
+								<span class="icon is-small">
+									<img src="acel.png" alt="Acél"/>
+								</span>
+							</th>
+							<th>
+								<span class="icon is-small">
+									<img src="titan.png" alt="Titán"/>
+								</span>
+							</th>
+							<th>
+								<span class="icon is-small">
+									<img src="palanta.png" alt="Palánta"/>
+								</span>
+							</th>
+							<th>
+								<span class="icon is-small">
+									<img src="energia.png" alt="Energia"/>
+								</span>
+							</th>
+							<th>
+								<span class="icon is-small">
+									<img src="ho.png" alt="Hő"/>
+								</span>
+							</th>
 						</tr>
 					</thead>
 					<tbody id="elozmenyek">
