@@ -1,24 +1,49 @@
-.value {
-	display: inline-block;
-	padding: 5px 10px;
-	border-radius: 3px;
+.wrapper {
+	display: grid;
+	grid-template-columns: min-content 1fr min-content;
+	grid-template-areas: 'a b c' 'd e f';
+}
+
+.subtract {
+	grid-area: a;
+	border-radius: 50% 0 0 50%;
+}
+
+.current {
+	grid-area: b;
+	padding: 5px 0;
 	font-weight: bold;
+	text-align: center;
 	background-color: white;
 	color: black;
-	border: 1px solid rgba(255, 255, 255, 0.4);
+	border: 1px solid transparent;
 }
 
 .income {
-	background-color: #44260a;
+	background-color: var(--income-color);
 	color: white;
 }
 
+.add {
+	grid-area: c;
+	border-radius: 0 50% 50% 0;
+}
+
 .change {
+	grid-area: e;
 	font-weight: bold;
-	font-size: smaller;
-	margin-top: 4px;
+	text-align: center;
+	line-height: 20px;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-radius: 0 0 10px 10px;
+	padding: 2px 0;
 }
 
 .invalid {
 	color: #ff6565;
+}
+
+.warningIcon {
+	fill: currentColor;
+	vertical-align: text-top;
 }

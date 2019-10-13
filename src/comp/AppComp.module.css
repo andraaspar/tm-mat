@@ -1,25 +1,65 @@
+.appWrapper {
+	display: flex;
+	justify-content: safe center;
+}
+
+.contentWrapper {
+	display: grid;
+	gap: 10px;
+	padding: 10px;
+	flex: 0 1 500px;
+}
+
 .table {
-	border-collapse: collapse;
-	white-space: nowrap;
+	display: grid;
+	gap: 5px;
+	grid-template-columns: min-content 1fr 1fr;
 }
 
-.table > * > tr > * {
-	padding: 2px 5px;
-	vertical-align: top;
-	text-align: left;
-}
-
-.historyValue {
-	padding: 2px 5px;
-	background-color: white;
-	color: black;
+.tableIcon {
+	grid-column: 1 / 2;
 	border-radius: 3px;
-	border: 1px solid rgba(255, 255, 255, 0.4);
-	font-size: smaller;
-	font-weight: bold;
 }
 
-.income {
-	background-color: #44260a;
-	color: white;
+.tableAmount {
+	grid-column: 2 / 3;
+}
+
+.tableIncome {
+	grid-column: 3 / 4;
+}
+
+.okCancelWrapper,
+.pagingWrapper {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.generationWrapper {
+	display: grid;
+	grid-template-columns: min-content 1fr min-content;
+	grid-template-areas: 'a b c';
+}
+
+.generationIcon {
+	grid-area: a;
+	border-radius: 3px 0 0 3px;
+}
+
+.generationCount {
+	grid-area: b;
+	background-color: black;
+	padding: 5px 0;
+	text-align: center;
+}
+
+.generationNext {
+	grid-area: c;
+	border-radius: 0 50% 50% 0;
+}
+
+.historyWrapper {
+	display: grid;
+	gap: 3px;
 }

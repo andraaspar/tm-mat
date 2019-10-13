@@ -10,8 +10,11 @@ import { ReactComponent as EnergySvg } from '../resource/energy.svg'
 import { ReactComponent as GenerationSvg } from '../resource/generation.svg'
 import { ReactComponent as HeatSvg } from '../resource/heat.svg'
 import { ReactComponent as IronSvg } from '../resource/iron.svg'
+import { ReactComponent as LeftSvg } from '../resource/left.svg'
 import { ReactComponent as McSvg } from '../resource/mc.svg'
 import { ReactComponent as PlantSvg } from '../resource/plant.svg'
+import { ReactComponent as PlusSvg } from '../resource/plus.svg'
+import { ReactComponent as RightSvg } from '../resource/right.svg'
 import { ReactComponent as TitaniumSvg } from '../resource/titanium.svg'
 import { ReactComponent as TrSvg } from '../resource/tr.svg'
 import style from './AppComp.module.css'
@@ -129,340 +132,315 @@ export function AppComp(props: AppCompProps) {
 		return !!getMatValues($mat).find(_ => _.change)
 	}
 	return (
-		<>
-			<p>
-				<button
-					type='button'
-					onClick={() => {
-						if (window.confirm('Biztos új játékot kezdesz?')) {
-							set$historyPage(0)
-							const newHistory: readonly IChange[] = []
-							set$history(newHistory)
-							persistHistory(newHistory)
-							set$mat(historyToMat(newHistory))
-						}
-					}}
-					disabled={$history.length === 0}
-				>
-					Új játék
-				</button>
-			</p>
-			<p>
-				<GenerationSvg /> {$mat.generation}. generáció{' '}
-				<button
-					type='button'
-					onClick={() => {
-						nextGeneration()
-					}}
-					disabled={hasChange()}
-				>
-					Következő
-				</button>
-			</p>
-			<table className={style.table}>
-				<thead>
-					<tr>
-						<th></th>
-						<th>Erőforrás</th>
-						<th>Bevétel</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							<TrSvg />
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.tr}
-								_setValue={tr => {
-									set$mat({ ...$mat, tr })
+		<div className={style.appWrapper}>
+			<div className={style.contentWrapper}>
+				<div>
+					<button
+						type='button'
+						onClick={() => {
+							if (window.confirm('Biztos új játékot kezdesz?')) {
+								set$historyPage(0)
+								const newHistory: readonly IChange[] = []
+								set$history(newHistory)
+								persistHistory(newHistory)
+								set$mat(historyToMat(newHistory))
+							}
+						}}
+						disabled={$history.length === 0}
+					>
+						Új játék
+					</button>
+				</div>
+				<div className={style.generationWrapper}>
+					<GenerationSvg className={style.generationIcon} />{' '}
+					<span className={style.generationCount}>
+						{$mat.generation}. generáció{' '}
+					</span>
+					<button
+						type='button'
+						className={style.generationNext}
+						onClick={() => {
+							nextGeneration()
+						}}
+						disabled={hasChange()}
+					>
+						<PlusSvg className='smallIcon' />
+					</button>
+				</div>
+				<div className={style.table}>
+					<TrSvg className={style.tableIcon} />
+					<div className={style.tableAmount}>
+						<MutableValueComp
+							_value={$mat.tr}
+							_setValue={tr => {
+								set$mat({ ...$mat, tr })
+							}}
+							_min={20}
+						/>
+					</div>
+					<McSvg className={style.tableIcon} />
+					<div className={style.tableAmount}>
+						<MutableValueComp
+							_value={$mat.amount.mc}
+							_setValue={mc => {
+								set$mat(
+									produce($mat, mat => {
+										mat.amount.mc = mc as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+						/>
+					</div>
+					<div className={style.tableIncome}>
+						<MutableValueComp
+							_value={$mat.income.mc}
+							_setValue={mc => {
+								set$mat(
+									produce($mat, mat => {
+										mat.income.mc = mc as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={-5}
+							_isIncome
+						/>
+					</div>
+					<IronSvg className={style.tableIcon} />
+					<div className={style.tableAmount}>
+						<MutableValueComp
+							_value={$mat.amount.iron}
+							_setValue={iron => {
+								set$mat(
+									produce($mat, mat => {
+										mat.amount.iron = iron as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+						/>
+					</div>
+					<div className={style.tableIncome}>
+						<MutableValueComp
+							_value={$mat.income.iron}
+							_setValue={iron => {
+								set$mat(
+									produce($mat, mat => {
+										mat.income.iron = iron as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+							_isIncome
+						/>
+					</div>
+					<TitaniumSvg className={style.tableIcon} />
+					<div className={style.tableAmount}>
+						<MutableValueComp
+							_value={$mat.amount.titanium}
+							_setValue={titanium => {
+								set$mat(
+									produce($mat, mat => {
+										mat.amount.titanium = titanium as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+						/>
+					</div>
+					<div className={style.tableIncome}>
+						<MutableValueComp
+							_value={$mat.income.titanium}
+							_setValue={titanium => {
+								set$mat(
+									produce($mat, mat => {
+										mat.income.titanium = titanium as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+							_isIncome
+						/>
+					</div>
+					<PlantSvg className={style.tableIcon} />
+					<div className={style.tableAmount}>
+						<MutableValueComp
+							_value={$mat.amount.plant}
+							_setValue={plant => {
+								set$mat(
+									produce($mat, mat => {
+										mat.amount.plant = plant as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+						/>
+					</div>
+					<div className={style.tableIncome}>
+						<MutableValueComp
+							_value={$mat.income.plant}
+							_setValue={plant => {
+								set$mat(
+									produce($mat, mat => {
+										mat.income.plant = plant as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+							_isIncome
+						/>
+					</div>
+					<EnergySvg className={style.tableIcon} />
+					<div className={style.tableAmount}>
+						<MutableValueComp
+							_value={$mat.amount.energy}
+							_setValue={energy => {
+								set$mat(
+									produce($mat, mat => {
+										mat.amount.energy = energy as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+						/>
+					</div>
+					<div className={style.tableIncome}>
+						<MutableValueComp
+							_value={$mat.income.energy}
+							_setValue={energy => {
+								set$mat(
+									produce($mat, mat => {
+										mat.income.energy = energy as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+							_isIncome
+						/>
+					</div>
+					<HeatSvg className={style.tableIcon} />
+					<div className={style.tableAmount}>
+						<MutableValueComp
+							_value={$mat.amount.heat}
+							_setValue={heat => {
+								set$mat(
+									produce($mat, mat => {
+										mat.amount.heat = heat as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+						/>
+					</div>
+					<div className={style.tableIncome}>
+						<MutableValueComp
+							_value={$mat.income.heat}
+							_setValue={heat => {
+								set$mat(
+									produce($mat, mat => {
+										mat.income.heat = heat as Draft<
+											IMutableValue
+										>
+									}),
+								)
+							}}
+							_min={0}
+							_isIncome
+						/>
+					</div>
+				</div>
+				<div className={style.okCancelWrapper}>
+					<button
+						type='button'
+						onClick={() => {
+							applyChanges()
+						}}
+						disabled={!isValid() || !hasChange()}
+					>
+						OK
+					</button>
+					<button
+						type='button'
+						onClick={() => {
+							cancelChanges()
+						}}
+						disabled={!hasChange()}
+					>
+						Mégse
+					</button>{' '}
+				</div>
+				{$history.length > 0 && (
+					<>
+						<div className={style.historyWrapper}>
+							{$history
+								.slice(
+									$historyPage * 10,
+									$historyPage * 10 + 10,
+								)
+								.map((change, index) => (
+									<ChangeComp key={index} _change={change} />
+								))}
+						</div>
+						<div className={style.pagingWrapper}>
+							<button
+								type='button'
+								onClick={() => {
+									set$historyPage($historyPage - 1)
 								}}
-								_min={20}
-							/>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<McSvg />
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.amount.mc}
-								_setValue={mc => {
-									set$mat(
-										produce($mat, mat => {
-											mat.amount.mc = mc as Draft<
-												IMutableValue
-											>
-										}),
-									)
+								disabled={$historyPage === 0}
+							>
+								<LeftSvg className='smallIcon' />
+							</button>{' '}
+							<button
+								type='button'
+								onClick={() => {
+									if (window.confirm('Biztos visszavonod?')) {
+										set$historyPage(0)
+										const newHistory = $history.slice(1)
+										set$history(newHistory)
+										persistHistory(newHistory)
+										set$mat(historyToMat(newHistory))
+									}
 								}}
-								_min={0}
-							/>
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.income.mc}
-								_setValue={mc => {
-									set$mat(
-										produce($mat, mat => {
-											mat.income.mc = mc as Draft<
-												IMutableValue
-											>
-										}),
-									)
+								disabled={$history.length === 0}
+							>
+								Visszavonom
+							</button>{' '}
+							<button
+								type='button'
+								onClick={() => {
+									set$historyPage($historyPage + 1)
 								}}
-								_min={-5}
-								_isIncome
-							/>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<IronSvg />
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.amount.iron}
-								_setValue={iron => {
-									set$mat(
-										produce($mat, mat => {
-											mat.amount.iron = iron as Draft<
-												IMutableValue
-											>
-										}),
-									)
-								}}
-								_min={0}
-							/>
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.income.iron}
-								_setValue={iron => {
-									set$mat(
-										produce($mat, mat => {
-											mat.income.iron = iron as Draft<
-												IMutableValue
-											>
-										}),
-									)
-								}}
-								_min={0}
-								_isIncome
-							/>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<TitaniumSvg />
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.amount.titanium}
-								_setValue={titanium => {
-									set$mat(
-										produce($mat, mat => {
-											mat.amount.titanium = titanium as Draft<
-												IMutableValue
-											>
-										}),
-									)
-								}}
-								_min={0}
-							/>
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.income.titanium}
-								_setValue={titanium => {
-									set$mat(
-										produce($mat, mat => {
-											mat.income.titanium = titanium as Draft<
-												IMutableValue
-											>
-										}),
-									)
-								}}
-								_min={0}
-								_isIncome
-							/>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<PlantSvg />
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.amount.plant}
-								_setValue={plant => {
-									set$mat(
-										produce($mat, mat => {
-											mat.amount.plant = plant as Draft<
-												IMutableValue
-											>
-										}),
-									)
-								}}
-								_min={0}
-							/>
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.income.plant}
-								_setValue={plant => {
-									set$mat(
-										produce($mat, mat => {
-											mat.income.plant = plant as Draft<
-												IMutableValue
-											>
-										}),
-									)
-								}}
-								_min={0}
-								_isIncome
-							/>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<EnergySvg />
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.amount.energy}
-								_setValue={energy => {
-									set$mat(
-										produce($mat, mat => {
-											mat.amount.energy = energy as Draft<
-												IMutableValue
-											>
-										}),
-									)
-								}}
-								_min={0}
-							/>
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.income.energy}
-								_setValue={energy => {
-									set$mat(
-										produce($mat, mat => {
-											mat.income.energy = energy as Draft<
-												IMutableValue
-											>
-										}),
-									)
-								}}
-								_min={0}
-								_isIncome
-							/>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<HeatSvg />
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.amount.heat}
-								_setValue={heat => {
-									set$mat(
-										produce($mat, mat => {
-											mat.amount.heat = heat as Draft<
-												IMutableValue
-											>
-										}),
-									)
-								}}
-								_min={0}
-							/>
-						</td>
-						<td>
-							<MutableValueComp
-								_value={$mat.income.heat}
-								_setValue={heat => {
-									set$mat(
-										produce($mat, mat => {
-											mat.income.heat = heat as Draft<
-												IMutableValue
-											>
-										}),
-									)
-								}}
-								_min={0}
-								_isIncome
-							/>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<p>
-				<button
-					type='button'
-					onClick={() => {
-						applyChanges()
-					}}
-					disabled={!isValid() || !hasChange()}
-				>
-					OK
-				</button>
-				{'          '}
-				<button
-					type='button'
-					onClick={() => {
-						cancelChanges()
-					}}
-					disabled={!hasChange()}
-				>
-					Mégse
-				</button>{' '}
-			</p>
-			{$history
-				.slice($historyPage * 10, $historyPage * 10 + 10)
-				.map((change, index) => (
-					<p key={index}>
-						<ChangeComp _change={change} />
-					</p>
-				))}
-			<p>
-				<button
-					type='button'
-					onClick={() => {
-						set$historyPage($historyPage - 1)
-					}}
-					disabled={$historyPage === 0}
-				>
-					«
-				</button>{' '}
-				<button
-					type='button'
-					onClick={() => {
-						if (window.confirm('Biztos visszavonod?')) {
-							set$historyPage(0)
-							const newHistory = $history.slice(1)
-							set$history(newHistory)
-							persistHistory(newHistory)
-							set$mat(historyToMat(newHistory))
-						}
-					}}
-					disabled={$history.length === 0}
-				>
-					Visszavonom
-				</button>{' '}
-				<button
-					type='button'
-					onClick={() => {
-						set$historyPage($historyPage + 1)
-					}}
-					disabled={$historyPage === lastPage}
-				>
-					»
-				</button>
-			</p>
-		</>
+								disabled={$historyPage === lastPage}
+							>
+								<RightSvg className='smallIcon' />
+							</button>
+						</div>
+					</>
+				)}
+			</div>
+		</div>
 	)
 }

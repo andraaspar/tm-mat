@@ -1,7 +1,5 @@
-html,
-body {
-	margin: 0;
-	padding: 0;
+* {
+	box-sizing: border-box;
 }
 
 html {
@@ -10,6 +8,13 @@ html {
 	font-family: sans-serif;
 	font-size: 14px;
 	line-height: 20px;
+	--income-color: #301700;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
 }
 
 button {
@@ -17,7 +22,7 @@ button {
 	line-height: 20px;
 	color: white;
 	background-color: rgba(255, 255, 255, 0.3);
-	border-radius: 3px;
+	border-radius: 16px;
 	border: 1px solid transparent;
 	padding: 5px 10px;
 	font-weight: bold;
@@ -39,4 +44,10 @@ button:focus {
 button:disabled {
 	color: rgba(255, 255, 255, 0.4);
 	background-color: rgba(255, 255, 255, 0.1);
+}
+
+.smallIcon {
+	fill: currentColor;
+	width: 8px;
+	height: 8px;
 }

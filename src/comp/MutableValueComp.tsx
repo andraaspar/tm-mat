@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { formatChange } from '../function/formatChange'
 import { IMutableValue } from '../model/IMutableValue'
+import { ReactComponent as MinusSvg } from '../resource/minus.svg'
+import { ReactComponent as PlusSvg } from '../resource/plus.svg'
 import { ReactComponent as WarningSvg } from '../resource/warning.svg'
 import style from './MutableValueComp.module.css'
 
@@ -28,17 +30,18 @@ export function MutableValueComp({
 		})
 	}
 	return (
-		<>
+		<div className={style.wrapper}>
 			<button
 				type='button'
+				className={style.subtract}
 				onClick={e => {
 					setValue(-1)
 				}}
 			>
-				-1
+				<MinusSvg className={`smallIcon`} />
 			</button>{' '}
 			<span
-				className={[style.value, _isIncome && style.income]
+				className={[style.current, _isIncome && style.income]
 					.filter(Boolean)
 					.join(' ')}
 			>
@@ -46,11 +49,12 @@ export function MutableValueComp({
 			</span>{' '}
 			<button
 				type='button'
+				className={style.add}
 				onClick={e => {
 					setValue(1)
 				}}
 			>
-				+1
+				<PlusSvg className={`smallIcon`} />
 			</button>{' '}
 			{_value.change !== 0 && (
 				<div
@@ -62,12 +66,12 @@ export function MutableValueComp({
 						<WarningSvg
 							width={16}
 							height={16}
-							fill='currentColor'
+							className={style.warningIcon}
 						/>
 					)}{' '}
 					{formatChange(_value.change)}
 				</div>
 			)}
-		</>
+		</div>
 	)
 }
