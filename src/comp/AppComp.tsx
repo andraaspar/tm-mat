@@ -445,7 +445,8 @@ export function AppComp(props: AppCompProps) {
 					disabled={!isValid() || !hasChange()}
 				>
 					OK
-				</button>{' '}
+				</button>
+				{'          '}
 				<button
 					type='button'
 					onClick={() => {
