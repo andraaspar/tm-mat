@@ -8,23 +8,19 @@ export interface MutableValueCompProps {
 	_value: IMutableValue
 	_setValue: (v: IMutableValue) => void
 	_min: number
-	_max: number
 	_isIncome?: boolean
-	_canChangeALot?: boolean
 }
 
 export function MutableValueComp({
 	_value,
 	_setValue,
 	_min,
-	_max,
 	_isIncome,
-	_canChangeALot,
 }: MutableValueCompProps) {
 	function setValue(diff: number) {
 		const change = _value.change + diff
 		const result = _value.current + change
-		const isValid = result <= _max && result >= _min
+		const isValid = result >= _min
 		_setValue({
 			..._value,
 			change,
@@ -33,19 +29,9 @@ export function MutableValueComp({
 	}
 	return (
 		<>
-			{_canChangeALot && (
-				<button
-					type='button'
-					onClick={() => {
-						setValue(-5)
-					}}
-				>
-					-5
-				</button>
-			)}{' '}
 			<button
 				type='button'
-				onClick={() => {
+				onClick={e => {
 					setValue(-1)
 				}}
 			>
@@ -60,22 +46,12 @@ export function MutableValueComp({
 			</span>{' '}
 			<button
 				type='button'
-				onClick={() => {
+				onClick={e => {
 					setValue(1)
 				}}
 			>
 				+1
 			</button>{' '}
-			{_canChangeALot && (
-				<button
-					type='button'
-					onClick={() => {
-						setValue(5)
-					}}
-				>
-					+5
-				</button>
-			)}
 			{_value.change !== 0 && (
 				<div
 					className={[style.change, !_value.isValid && style.invalid]

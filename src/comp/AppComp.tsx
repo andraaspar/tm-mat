@@ -3,7 +3,7 @@ import * as React from 'react'
 import { useState } from 'react'
 import { getMatValues } from '../function/getMatValues'
 import { matToChange } from '../function/matToChange'
-import { IChange, makeChange } from '../model/IChange'
+import { IChange } from '../model/IChange'
 import { IMat } from '../model/IMat'
 import { IMutableValue } from '../model/IMutableValue'
 import { ReactComponent as EnergySvg } from '../resource/energy.svg'
@@ -17,38 +17,6 @@ import { ReactComponent as TrSvg } from '../resource/tr.svg'
 import style from './AppComp.module.css'
 import { ChangeComp } from './ChangeComp'
 import { MutableValueComp } from './MutableValueComp'
-
-const BUY_PLANTATION = makeChange(change => {
-	change.tr = 1
-	change.amount.plant = -8
-})
-const RAISE_HEAT = makeChange(change => {
-	change.tr = 1
-	change.amount.heat = -8
-})
-const BUY_CARD = makeChange(change => {
-	change.amount.mc = -3
-})
-const BUILD_REACTOR = makeChange(change => {
-	change.amount.mc = -11
-	change.income.energy = 1
-})
-const ASTEROID = makeChange(change => {
-	change.tr = 1
-	change.amount.mc = -14
-})
-const WATER = makeChange(change => {
-	change.tr = 1
-	change.amount.mc = -18
-})
-const BUY_PLANTATION_MC = makeChange(change => {
-	change.tr = 1
-	change.amount.mc = -23
-})
-const BUILD_CITY = makeChange(change => {
-	change.amount.mc = -25
-	change.income.mc = 1
-})
 
 export interface AppCompProps {}
 
@@ -180,8 +148,16 @@ export function AppComp(props: AppCompProps) {
 				</button>
 			</p>
 			<p>
-				<GenerationSvg width={16} height={16} /> {$mat.generation}.
-				generáció
+				<GenerationSvg /> {$mat.generation}. generáció{' '}
+				<button
+					type='button'
+					onClick={() => {
+						nextGeneration()
+					}}
+					disabled={hasChange()}
+				>
+					Következő
+				</button>
 			</p>
 			<table className={style.table}>
 				<thead>
@@ -203,7 +179,6 @@ export function AppComp(props: AppCompProps) {
 									set$mat({ ...$mat, tr })
 								}}
 								_min={20}
-								_max={100}
 							/>
 						</td>
 					</tr>
@@ -224,8 +199,6 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
-								_canChangeALot
 							/>
 						</td>
 						<td>
@@ -241,7 +214,6 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={-5}
-								_max={Infinity}
 								_isIncome
 							/>
 						</td>
@@ -263,8 +235,6 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
-								_canChangeALot
 							/>
 						</td>
 						<td>
@@ -280,7 +250,6 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
 								_isIncome
 							/>
 						</td>
@@ -302,8 +271,6 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
-								_canChangeALot
 							/>
 						</td>
 						<td>
@@ -319,7 +286,6 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
 								_isIncome
 							/>
 						</td>
@@ -341,21 +307,7 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
-								_canChangeALot
 							/>
-							<div className={style.extraButton}>
-								<button
-									type='button'
-									onClick={() => {
-										addChangeToHistory(BUY_PLANTATION)
-									}}
-									disabled={$mat.amount.plant.current < 8}
-								>
-									Növényzetlapka{' '}
-									<ChangeComp _change={BUY_PLANTATION} />
-								</button>
-							</div>
 						</td>
 						<td>
 							<MutableValueComp
@@ -370,7 +322,6 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
 								_isIncome
 							/>
 						</td>
@@ -392,8 +343,6 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
-								_canChangeALot
 							/>
 						</td>
 						<td>
@@ -409,7 +358,6 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
 								_isIncome
 							/>
 						</td>
@@ -431,20 +379,7 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
-								_canChangeALot
 							/>
-							<div className={style.extraButton}>
-								<button
-									type='button'
-									onClick={() => {
-										addChangeToHistory(RAISE_HEAT)
-									}}
-									disabled={$mat.amount.heat.current < 8}
-								>
-									Hőemelés <ChangeComp _change={RAISE_HEAT} />
-								</button>
-							</div>
 						</td>
 						<td>
 							<MutableValueComp
@@ -459,69 +394,12 @@ export function AppComp(props: AppCompProps) {
 									)
 								}}
 								_min={0}
-								_max={Infinity}
 								_isIncome
 							/>
 						</td>
 					</tr>
 				</tbody>
 			</table>
-			<p>
-				<button
-					type='button'
-					onClick={() => {
-						addChangeToHistory(BUY_CARD)
-					}}
-					disabled={$mat.amount.mc.current < 3}
-				>
-					Kártya <ChangeComp _change={BUY_CARD} />
-				</button>{' '}
-				<button
-					type='button'
-					onClick={() => {
-						addChangeToHistory(BUILD_REACTOR)
-					}}
-					disabled={$mat.amount.mc.current < 11}
-				>
-					Erőmű <ChangeComp _change={BUILD_REACTOR} />
-				</button>{' '}
-				<button
-					type='button'
-					onClick={() => {
-						addChangeToHistory(ASTEROID)
-					}}
-					disabled={$mat.amount.mc.current < 14}
-				>
-					Aszteroida <ChangeComp _change={ASTEROID} />
-				</button>{' '}
-				<button
-					type='button'
-					onClick={() => {
-						addChangeToHistory(WATER)
-					}}
-					disabled={$mat.amount.mc.current < 18}
-				>
-					Rétegvíz <ChangeComp _change={WATER} />
-				</button>{' '}
-				<button
-					type='button'
-					onClick={() => {
-						addChangeToHistory(BUY_PLANTATION_MC)
-					}}
-					disabled={$mat.amount.mc.current < 23}
-				>
-					Növényesítés <ChangeComp _change={BUY_PLANTATION_MC} />
-				</button>{' '}
-				<button
-					type='button'
-					onClick={() => {
-						addChangeToHistory(BUILD_CITY)
-					}}
-					disabled={$mat.amount.mc.current < 25}
-				>
-					Városalapítás <ChangeComp _change={BUILD_CITY} />
-				</button>
-			</p>
 			<p>
 				<button
 					type='button'
@@ -542,15 +420,6 @@ export function AppComp(props: AppCompProps) {
 				>
 					Mégse
 				</button>{' '}
-				<button
-					type='button'
-					onClick={() => {
-						nextGeneration()
-					}}
-					disabled={hasChange()}
-				>
-					Generáció váltás
-				</button>
 			</p>
 			{$history
 				.slice($historyPage * 10, $historyPage * 10 + 10)
