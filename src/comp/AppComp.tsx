@@ -352,7 +352,7 @@ export function AppComp(props: AppCompProps) {
 									}}
 									disabled={$mat.amount.plant.current < 8}
 								>
-									Növényzetlapkát veszek{' '}
+									Növényzetlapka{' '}
 									<ChangeComp _change={BUY_PLANTATION} />
 								</button>
 							</div>
@@ -442,8 +442,7 @@ export function AppComp(props: AppCompProps) {
 									}}
 									disabled={$mat.amount.heat.current < 8}
 								>
-									Emelem a hőmérsékletet{' '}
-									<ChangeComp _change={RAISE_HEAT} />
+									Hőemelés <ChangeComp _change={RAISE_HEAT} />
 								</button>
 							</div>
 						</td>
