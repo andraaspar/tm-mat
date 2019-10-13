@@ -1,10 +1,9 @@
 import { Draft, produce } from 'immer'
 import * as React from 'react'
 import { useState } from 'react'
-import { formatChange } from '../function/formatChange'
 import { getMatValues } from '../function/getMatValues'
 import { matToChange } from '../function/matToChange'
-import { IChange } from '../model/IChange'
+import { IChange, makeChange } from '../model/IChange'
 import { IMat } from '../model/IMat'
 import { IMutableValue } from '../model/IMutableValue'
 import { ReactComponent as EnergySvg } from '../resource/energy.svg'
@@ -16,7 +15,40 @@ import { ReactComponent as PlantSvg } from '../resource/plant.svg'
 import { ReactComponent as TitaniumSvg } from '../resource/titanium.svg'
 import { ReactComponent as TrSvg } from '../resource/tr.svg'
 import style from './AppComp.module.css'
+import { ChangeComp } from './ChangeComp'
 import { MutableValueComp } from './MutableValueComp'
+
+const BUY_PLANTATION = makeChange(change => {
+	change.tr = 1
+	change.amount.plant = -8
+})
+const RAISE_HEAT = makeChange(change => {
+	change.tr = 1
+	change.amount.heat = -8
+})
+const BUY_CARD = makeChange(change => {
+	change.amount.mc = -3
+})
+const BUILD_REACTOR = makeChange(change => {
+	change.amount.mc = -11
+	change.income.energy = 1
+})
+const ASTEROID = makeChange(change => {
+	change.tr = 1
+	change.amount.mc = -14
+})
+const WATER = makeChange(change => {
+	change.tr = 1
+	change.amount.mc = -18
+})
+const BUY_PLANTATION_MC = makeChange(change => {
+	change.tr = 1
+	change.amount.mc = -23
+})
+const BUILD_CITY = makeChange(change => {
+	change.amount.mc = -25
+	change.income.mc = 1
+})
 
 export interface AppCompProps {}
 
@@ -54,13 +86,15 @@ export function AppComp(props: AppCompProps) {
 	function loadHistory(): readonly IChange[] | null {
 		return JSON.parse(localStorage.getItem('history') || 'null')
 	}
-	function makeHistory(oldMat: IMat, newMat: IMat) {
-		const change = matToChange(oldMat, newMat)
-		set$historyPage(0)
+	function addChangeToHistory(change: IChange) {
 		const newHistory = [change, ...$history]
+		set$historyPage(0)
 		set$history(newHistory)
 		persistHistory(newHistory)
-		set$mat(newMat)
+		set$mat(historyToMat(newHistory))
+	}
+	function makeHistory(oldMat: IMat, newMat: IMat) {
+		addChangeToHistory(matToChange(oldMat, newMat))
 	}
 	function nextGeneration() {
 		const newMat = produce($mat, mat => {
@@ -314,14 +348,12 @@ export function AppComp(props: AppCompProps) {
 								<button
 									type='button'
 									onClick={() => {
-										const newMat = produce($mat, mat => {
-											mat.amount.plant.current -= 8
-										})
-										makeHistory($mat, newMat)
+										addChangeToHistory(BUY_PLANTATION)
 									}}
 									disabled={$mat.amount.plant.current < 8}
 								>
-									Növényzetlapkát veszek
+									Növényzetlapkát veszek{' '}
+									<ChangeComp _change={BUY_PLANTATION} />
 								</button>
 							</div>
 						</td>
@@ -406,14 +438,12 @@ export function AppComp(props: AppCompProps) {
 								<button
 									type='button'
 									onClick={() => {
-										const newMat = produce($mat, mat => {
-											mat.amount.heat.current -= 8
-										})
-										makeHistory($mat, newMat)
+										addChangeToHistory(RAISE_HEAT)
 									}}
 									disabled={$mat.amount.heat.current < 8}
 								>
-									Emelem a hőmérsékletet
+									Emelem a hőmérsékletet{' '}
+									<ChangeComp _change={RAISE_HEAT} />
 								</button>
 							</div>
 						</td>
@@ -437,6 +467,62 @@ export function AppComp(props: AppCompProps) {
 					</tr>
 				</tbody>
 			</table>
+			<p>
+				<button
+					type='button'
+					onClick={() => {
+						addChangeToHistory(BUY_CARD)
+					}}
+					disabled={$mat.amount.mc.current < 3}
+				>
+					Kártya <ChangeComp _change={BUY_CARD} />
+				</button>{' '}
+				<button
+					type='button'
+					onClick={() => {
+						addChangeToHistory(BUILD_REACTOR)
+					}}
+					disabled={$mat.amount.mc.current < 11}
+				>
+					Erőmű <ChangeComp _change={BUILD_REACTOR} />
+				</button>{' '}
+				<button
+					type='button'
+					onClick={() => {
+						addChangeToHistory(ASTEROID)
+					}}
+					disabled={$mat.amount.mc.current < 14}
+				>
+					Aszteroida <ChangeComp _change={ASTEROID} />
+				</button>{' '}
+				<button
+					type='button'
+					onClick={() => {
+						addChangeToHistory(WATER)
+					}}
+					disabled={$mat.amount.mc.current < 18}
+				>
+					Rétegvíz <ChangeComp _change={WATER} />
+				</button>{' '}
+				<button
+					type='button'
+					onClick={() => {
+						addChangeToHistory(BUY_PLANTATION_MC)
+					}}
+					disabled={$mat.amount.mc.current < 23}
+				>
+					Növényesítés <ChangeComp _change={BUY_PLANTATION_MC} />
+				</button>{' '}
+				<button
+					type='button'
+					onClick={() => {
+						addChangeToHistory(BUILD_CITY)
+					}}
+					disabled={$mat.amount.mc.current < 25}
+				>
+					Városalapítás <ChangeComp _change={BUILD_CITY} />
+				</button>
+			</p>
 			<p>
 				<button
 					type='button'
@@ -471,29 +557,7 @@ export function AppComp(props: AppCompProps) {
 				.slice($historyPage * 10, $historyPage * 10 + 10)
 				.map((change, index) => (
 					<p key={index}>
-						{change.generation !== 0 && (
-							<>
-								<GenerationSvg width={16} height={16} />{' '}
-								{change.generation}{' '}
-							</>
-						)}
-						{change.tr !== 0 && (
-							<>
-								<TrSvg width={16} height={16} /> {change.tr}{' '}
-							</>
-						)}
-						{/* prettier-ignore */ change.amount.mc !== 0 && <><McSvg width={16} height={16} /> <span className={style.historyValue}>{formatChange(change.amount.mc)}</span>{' '}</>}
-						{/* prettier-ignore */ change.amount.iron !== 0 && <><IronSvg width={16} height={16} /> <span className={style.historyValue}>{formatChange(change.amount.iron)}</span>{' '}</>}
-						{/* prettier-ignore */ change.amount.titanium !== 0 && <><TitaniumSvg width={16} height={16} /> <span className={style.historyValue}>{formatChange(change.amount.titanium)}</span>{' '}</>}
-						{/* prettier-ignore */ change.amount.plant !== 0 && <><PlantSvg width={16} height={16} /> <span className={style.historyValue}>{formatChange(change.amount.plant)}</span>{' '}</>}
-						{/* prettier-ignore */ change.amount.energy !== 0 && <><EnergySvg width={16} height={16} /> <span className={style.historyValue}>{formatChange(change.amount.energy)}</span>{' '}</>}
-						{/* prettier-ignore */ change.amount.heat !== 0 && <><HeatSvg width={16} height={16} /> <span className={style.historyValue}>{formatChange(change.amount.heat)}</span>{' '}</>}
-						{/* prettier-ignore */ change.income.mc !== 0 && <><McSvg width={16} height={16} /> <span className={[style.historyValue, style.income].join(' ')}>{formatChange(change.income.mc)}</span>{' '}</>}
-						{/* prettier-ignore */ change.income.iron !== 0 && <><IronSvg width={16} height={16} /> <span className={[style.historyValue, style.income].join(' ')}>{formatChange(change.income.iron)}</span>{' '}</>}
-						{/* prettier-ignore */ change.income.titanium !== 0 && <><TitaniumSvg width={16} height={16} /> <span className={[style.historyValue, style.income].join(' ')}>{formatChange(change.income.titanium)}</span>{' '}</>}
-						{/* prettier-ignore */ change.income.plant !== 0 && <><PlantSvg width={16} height={16} /> <span className={[style.historyValue, style.income].join(' ')}>{formatChange(change.income.plant)}</span>{' '}</>}
-						{/* prettier-ignore */ change.income.energy !== 0 && <><EnergySvg width={16} height={16} /> <span className={[style.historyValue, style.income].join(' ')}>{formatChange(change.income.energy)}</span>{' '}</>}
-						{/* prettier-ignore */ change.income.heat !== 0 && <><HeatSvg width={16} height={16} /> <span className={[style.historyValue, style.income].join(' ')}>{formatChange(change.income.heat)}</span>{' '}</>}
+						<ChangeComp _change={change} />
 					</p>
 				))}
 			<p>
