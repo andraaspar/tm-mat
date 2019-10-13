@@ -1,0 +1,41 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	background-color: #333;
+	color: white;
+	font-family: sans-serif;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+button {
+	line-height: 20px;
+	color: white;
+	background-color: rgba(255, 255, 255, 0.3);
+	border-radius: 3px;
+	border: 1px solid transparent;
+	padding: 5px 10px;
+	font-weight: bold;
+}
+
+button:hover {
+	background-color: rgba(255, 255, 255, 0.6);
+}
+
+button:active {
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+button:focus {
+	border-color: #00add8;
+	outline: none;
+}
+
+button:disabled {
+	color: rgba(255, 255, 255, 0.4);
+	background-color: rgba(255, 255, 255, 0.1);
+}
