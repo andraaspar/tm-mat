@@ -16,6 +16,7 @@
 .change {
 	font-weight: bold;
 	font-size: smaller;
+	margin-top: 4px;
 }
 
 .invalid {
