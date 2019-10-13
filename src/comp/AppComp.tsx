@@ -92,6 +92,7 @@ export function AppComp(props: AppCompProps) {
 		const newMat = produce($mat, mat => {
 			for (const value of getMatValues(mat) as Draft<IMutableValue>[]) {
 				value.change = 0
+				value.isValid = true
 			}
 		})
 		set$mat(newMat)
